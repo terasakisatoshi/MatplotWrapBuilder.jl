@@ -75,8 +75,6 @@ jobs:
           arch: x64
       - name: Setup Julia
         run: |
-          println("Hello, World!")
-          using InteractiveUtils; versioninfo()
           using Pkg; Pkg.add("CxxWrap");
         shell: bash -c "julia --color=yes --project {0}"
       - name: Build
