@@ -76,7 +76,11 @@ jobs:
       - name: Setup Julia
         run: julia -e "using Pkg; Pkg.add(\"CxxWrap\")"
       - name: Run make
-        run: make -C deps
+        run: |
+          cd deps
+          git clone --depth=1 https://github.com/alandefreitas/matplotplusplus.git
+          cmake -S . -B ./build ${{ matrix.config.cmake_extra_args }} -DCMAKE_BUILD_TYPE=${{ matrix.config.config }} -DCMAKE_PREFIX_PATH=`julia --project=@. -e 'using CxxWrap; CxxWrap.prefix_path() |> print'`
+          cmake --build ./build --parallel ${{ matrix.config.cores }} --config ${{ matrix.config.config }}
       - name: Create packages
         working-directory: ./build
         run: ${{ matrix.config.sudocmd }} cpack
@@ -84,8 +88,8 @@ jobs:
         uses: actions/upload-artifact@v2
         with:
           name: Binary Packages ${{ matrix.config.artifact_name }}
-          path: build/matplotplusplus-?.?.?-*.*
+          path: build/lib*.*
       - name: Archive Installer Packages as is
         uses: kittaakos/upload-artifact-as-is@v0
         with:
-          path: build/matplotplusplus-?.?.?-*.*
+          path: build/lib*.*
