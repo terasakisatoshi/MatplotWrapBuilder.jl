@@ -80,14 +80,14 @@ jobs:
       - name: Setup Julia
         run: |
           julia -e 'using Pkg; Pkg.add(\"CxxWrap\")'
-          julia -e '@show using CxxWrap; CxxWrap.prefix_path()'
+          julia -e 'using CxxWrap; println(CxxWrap.prefix_path())'
         shell: pwsh
       - name: Build libcxxwrap_jll
         run: |
           git clone https://github.com/JuliaInterop/libcxxwrap-julia.git
-          cmake -DJulia_EXECUTABLE=$(which julia) -S libcxxwrap-julia -B libcxxwrap-jll_build -DCMAKE_INSTALL_PREFIX=libcxxwrap_prefix
+          cmake -DJulia_EXECUTABLE=$(which julia) -S libcxxwrap-julia -B libcxxwrap-jll_build
           cmake --build libcxxwrap-jll_build --parallel ${{ matrix.config.cores }} --config ${{ matrix.config.config }}
-          cmake --build libcxxwrap-jll_build --target install
+          ${{ matrix.config.sudocmd }} cmake --build libcxxwrap-jll_build --target install
       - name: Build lib
         run: |
           cd deps
