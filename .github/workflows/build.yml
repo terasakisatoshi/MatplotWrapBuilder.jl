@@ -77,31 +77,6 @@ jobs:
         run: julia -e 'using Pkg; Pkg.add("CxxWrap")'
       - name: Run make
         run: make -C deps
-      - name: Clone Matplot++
-        run: git clone https://github.com/alandefreitas/matplotplusplus.git
-      - name: Create Work Dir
-        run: mkdir build
-      - name: Configure
-        working-directory: ./build
-        run: |
-          cmake ../matplotplusplus ${{ matrix.config.cmake_extra_args }} -DCMAKE_BUILD_TYPE=${{ matrix.config.config }}
-      - name: Build
-        working-directory: ./build
-        run: cmake --build . -j ${{ matrix.config.cores }} --config ${{ matrix.config.config }}
-      - name: Test
-        working-directory: ./build
-        run: ctest -j ${{ matrix.config.cores }} -C ${{ matrix.config.config }}
-      - name: Install
-        working-directory: ./build
-        run: ${{ matrix.config.sudocmd }} cmake --install .
-      - name: Integration Test
-        working-directory: ./test/integration
-        run: |
-          mkdir build
-          cd build
-          cmake .. ${{ matrix.config.cmake_extra_args }} -DCMAKE_BUILD_TYPE=${{ matrix.config.config }}
-          cmake --build . -j ${{ matrix.config.cores }} --config ${{ matrix.config.config }}
-        continue-on-error: true
       - name: Create packages
         working-directory: ./build
         run: ${{ matrix.config.sudocmd }} cpack
