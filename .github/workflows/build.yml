@@ -33,6 +33,7 @@ jobs:
           # see: https://github.com/actions/virtual-environments
           #- {
           #  name: "Windows/2019/Static/X86/Release",
+          #  arch: x86,
           #  os: windows-2019,
           #  config: Release,
           #  cmake_extra_args: -G "Visual Studio 16 2019" -A Win32,
@@ -42,6 +43,7 @@ jobs:
           #}
           - {
             name: "Windows/2019/Static/X64/Release",
+            arch: x64,
             os: windows-2019,
             config: Release,
             cmake_extra_args: -G "Visual Studio 16 2019" -A x64 -DCMAKE_CXX_FLAGS="/O2",
@@ -51,6 +53,7 @@ jobs:
           }
           - {
             name: "Ubuntu/18.04/Static/X64/Release",
+            arch: x64,
             os: ubuntu-18.04,
             config: Release,
             cmake_extra_args: "-DCMAKE_C_COMPILER=/usr/bin/gcc-8 -DCMAKE_CXX_COMPILER=/usr/bin/g++-8  -DCMAKE_CXX_FLAGS=\"-O2\"",
@@ -60,6 +63,7 @@ jobs:
           }
           - {
             name: "MacOSX/10.15/Static/X64/Release",
+            arch: x64,
             os: macos-10.15,
             config: Release,
             cmake_extra_args: "-DCMAKE_CXX_FLAGS=\"-O2\"",
@@ -72,7 +76,7 @@ jobs:
       - uses: julia-actions/setup-julia@latest
         with:
           version: 1.5
-          arch: x64
+          arch: ${{ matrix.config.arch }}
       - name: Setup Julia
         run: |
           julia -e 'using Pkg; Pkg.add(\"CxxWrap\")'
