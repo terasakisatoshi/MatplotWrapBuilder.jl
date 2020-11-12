@@ -75,8 +75,8 @@ jobs:
           arch: x64
       - name: Setup Julia
         run: |
-          using Pkg; Pkg.add("CxxWrap");
-        shell: bash -c "julia --color=yes --project {0}"
+          julia -e 'using Pkg; Pkg.add(\"CxxWrap\")'
+        shwll: pwsh
       - name: Build
         run: |
           cd deps
