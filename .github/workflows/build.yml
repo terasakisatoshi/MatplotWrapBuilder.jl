@@ -85,10 +85,8 @@ jobs:
         run: |
           cd deps
           git clone --depth=1 https://github.com/alandefreitas/matplotplusplus.git
-          $prefix=(julia --project=@. -e 'using CxxWrap; CxxWrap.prefix_path() |> print' | Out-String)
-          cmake -S . -B ./build ${{ matrix.config.cmake_extra_args }} -DCMAKE_BUILD_TYPE=${{ matrix.config.config }} -DCMAKE_PREFIX_PATH=\"${prefix}\"
+          cmake -S . -B ./build ${{ matrix.config.cmake_extra_args }} -DCMAKE_BUILD_TYPE=${{ matrix.config.config }} -DCMAKE_PREFIX_PATH=$(julia --project=@. -e 'using CxxWrap; CxxWrap.prefix_path() |> print')
           cmake --build ./build --parallel ${{ matrix.config.cores }} --config ${{ matrix.config.config }}
-        shell: pwsh
       - name: Archive Packages
         uses: actions/upload-artifact@v2
         with:
