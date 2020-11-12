@@ -92,7 +92,7 @@ jobs:
         run: |
           cd deps
           git clone --depth=1 https://github.com/alandefreitas/matplotplusplus.git
-          cmake -S . -B ./build ${{ matrix.config.cmake_extra_args }} -DCMAKE_BUILD_TYPE=${{ matrix.config.config }} -DCMAKE_PREFIX_PATH=../libcxxwrap_prefix
+          cmake -S . -B ./build ${{ matrix.config.cmake_extra_args }} -DCMAKE_BUILD_TYPE=${{ matrix.config.config }}
           cmake --build ./build --parallel ${{ matrix.config.cores }} --config ${{ matrix.config.config }}
         shell: pwsh
       - name: Archive Packages
