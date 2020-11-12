@@ -101,7 +101,7 @@ jobs:
         with:
           name: Binary Packages ${{ matrix.config.artifact_name }}
           path: deps/build/lib/libmplxx.*
-      - name: Archive Installer Packages as is
-        uses: kittaakos/upload-artifact-as-is@v0
-        with:
-          path: deps/build/lib/libmplxx.*
+      #- name: Archive Installer Packages as is
+      #  uses: kittaakos/upload-artifact-as-is@v0
+      #  with:
+      #    path: deps/build/lib/libmplxx.*
