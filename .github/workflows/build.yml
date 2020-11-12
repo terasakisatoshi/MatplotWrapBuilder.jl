@@ -69,6 +69,14 @@ jobs:
           }
     steps:
       - uses: actions/checkout@v2
+      - uses: julia-actions/setup-julia@latest
+        with:
+          version: 1.5
+          arch: x64
+      - name: Setup Julia
+        run: julia -e 'using Pkg; Pkg.add("CxxWrap.jl")'
+      - name: Run make
+        run: make -C deps
       - name: Clone Matplot++
         run: git clone https://github.com/alandefreitas/matplotplusplus.git
       - name: Create Work Dir
