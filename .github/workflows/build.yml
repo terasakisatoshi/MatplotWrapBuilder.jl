@@ -77,7 +77,7 @@ jobs:
         run: |
           println("Hello, World!")
           using InteractiveUtils; versioninfo()
-          using Pkg; Pkg.add("CxxWrap"));
+          using Pkg; Pkg.add("CxxWrap");
         shell: bash -c "julia --color=yes --project {0}"
       - name: Build
         run: |
