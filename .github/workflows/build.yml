@@ -74,7 +74,7 @@ jobs:
           version: 1.5
           arch: x64
       - name: Setup Julia
-        run: julia -e 'using Pkg; Pkg.add("CxxWrap")'
+        run: julia -e "using Pkg; Pkg.add(\"CxxWrap\")"
       - name: Run make
         run: make -C deps
       - name: Create packages
