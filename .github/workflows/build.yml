@@ -80,7 +80,7 @@ jobs:
       - name: Setup Julia
         run: |
           julia -e 'using Pkg; Pkg.add(\"CxxWrap\")'
-          using CxxWrap; CxxWrap.prefix_path() |> print
+          julia -e '@show using CxxWrap; CxxWrap.prefix_path()'
         shell: pwsh
       - name: Build libcxxwrap_jll
         run: |
