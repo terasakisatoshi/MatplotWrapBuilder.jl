@@ -31,17 +31,19 @@ jobs:
       matrix:
         config:
           # see: https://github.com/actions/virtual-environments
-          - {
-            name: "Windows/2019/Static/X86/Release",
-            os: windows-2019,
-            config: Release,
-            cmake_extra_args: -G "Visual Studio 16 2019" -A Win32,
-            sudocmd: "",
-            artifact_name: "Windows x86",
-            cores: 2,
-          }
+          #- {
+          #  name: "Windows/2019/Static/X86/Release",
+          #  arch: x86,
+          #  os: windows-2019,
+          #  config: Release,
+          #  cmake_extra_args: -G "Visual Studio 16 2019" -A Win32,
+          #  sudocmd: "",
+          #  artifact_name: "Windows x86",
+          #  cores: 2,
+          #}
           - {
             name: "Windows/2019/Static/X64/Release",
+            arch: x64,
             os: windows-2019,
             config: Release,
             cmake_extra_args: -G "Visual Studio 16 2019" -A x64 -DCMAKE_CXX_FLAGS="/O2",
@@ -51,6 +53,7 @@ jobs:
           }
           - {
             name: "Ubuntu/18.04/Static/X64/Release",
+            arch: x64,
             os: ubuntu-18.04,
             config: Release,
             cmake_extra_args: "-DCMAKE_C_COMPILER=/usr/bin/gcc-8 -DCMAKE_CXX_COMPILER=/usr/bin/g++-8  -DCMAKE_CXX_FLAGS=\"-O2\"",
@@ -60,6 +63,7 @@ jobs:
           }
           - {
             name: "MacOSX/10.15/Static/X64/Release",
+            arch: x64,
             os: macos-10.15,
             config: Release,
             cmake_extra_args: "-DCMAKE_CXX_FLAGS=\"-O2\"",
@@ -72,45 +76,23 @@ jobs:
       - uses: julia-actions/setup-julia@latest
         with:
           version: 1.5
-          arch: x64
+          arch: ${{ matrix.config.arch }}
       - name: Setup Julia
-        run: julia -e 'using Pkg; Pkg.add("CxxWrap.jl")'
-      - name: Run make
-        run: make -C deps
-      - name: Clone Matplot++
-        run: git clone https://github.com/alandefreitas/matplotplusplus.git
-      - name: Create Work Dir
-        run: mkdir build
-      - name: Configure
-        working-directory: ./build
         run: |
-          cmake ../matplotplusplus ${{ matrix.config.cmake_extra_args }} -DCMAKE_BUILD_TYPE=${{ matrix.config.config }}
+          julia -e 'using Pkg; Pkg.add(\"CxxWrap\")'
+        shell: pwsh
       - name: Build
-        working-directory: ./build
-        run: cmake --build . -j ${{ matrix.config.cores }} --config ${{ matrix.config.config }}
-      - name: Test
-        working-directory: ./build
-        run: ctest -j ${{ matrix.config.cores }} -C ${{ matrix.config.config }}
-      - name: Install
-        working-directory: ./build
-        run: ${{ matrix.config.sudocmd }} cmake --install .
-      - name: Integration Test
-        working-directory: ./test/integration
         run: |
-          mkdir build
-          cd build
-          cmake .. ${{ matrix.config.cmake_extra_args }} -DCMAKE_BUILD_TYPE=${{ matrix.config.config }}
-          cmake --build . -j ${{ matrix.config.cores }} --config ${{ matrix.config.config }}
-        continue-on-error: true
-      - name: Create packages
-        working-directory: ./build
-        run: ${{ matrix.config.sudocmd }} cpack
+          cd deps
+          git clone --depth=1 https://github.com/alandefreitas/matplotplusplus.git
+          cmake -S . -B ./build ${{ matrix.config.cmake_extra_args }} -DCMAKE_BUILD_TYPE=${{ matrix.config.config }} -DCMAKE_PREFIX_PATH=`julia --project=@. -e 'using CxxWrap; CxxWrap.prefix_path() |> print'`
+          cmake --build ./build --parallel ${{ matrix.config.cores }} --config ${{ matrix.config.config }}
       - name: Archive Packages
         uses: actions/upload-artifact@v2
         with:
           name: Binary Packages ${{ matrix.config.artifact_name }}
-          path: build/matplotplusplus-?.?.?-*.*
+          path: deps/build/lib*.*
       - name: Archive Installer Packages as is
         uses: kittaakos/upload-artifact-as-is@v0
         with:
-          path: build/matplotplusplus-?.?.?-*.*
+          path: deps/build/lib*.*
