@@ -74,10 +74,11 @@ jobs:
           version: 1.5
           arch: x64
       - name: Setup Julia
-        run: |
-            using Pkg
-            Pkg.add("CxxWrap")
-          shell: bash -c "julia --color=yes {0}"
+      - run: |
+          println("Hello, World!")
+          using InteractiveUtils; versioninfo()
+          using Pkg; Pkg.add("CxxWrap"));
+        shell: bash -c "julia --color=yes --project {0}"
       - name: Build
         run: |
           cd deps
