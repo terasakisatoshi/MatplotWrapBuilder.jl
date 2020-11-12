@@ -76,7 +76,7 @@ jobs:
       - name: Setup Julia
         run: |
           julia -e 'using Pkg; Pkg.add(\"CxxWrap\")'
-        shwll: pwsh
+        shell: pwsh
       - name: Build
         run: |
           cd deps
