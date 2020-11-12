@@ -39,7 +39,7 @@ jobs:
           #  sudocmd: "",
           #  artifact_name: "Windows x86",
           #  cores: 2,
-          }
+          #}
           - {
             name: "Windows/2019/Static/X64/Release",
             os: windows-2019,
